@@ -1,0 +1,52 @@
+// Change your color you want --- please input rgb color (ex: 22,33,44)
+
+:root {
+  // PRIMARY COLOR
+  --c-primary-10: 41, 149, 211;
+  --c-primary-50: 51, 154, 213;
+  --c-primary-100: 64, 161, 215;
+  --c-primary-200: 87, 173, 219;
+  --c-primary-300: 110, 185, 223;
+  --c-primary-400: 133, 197, 227;
+  --c-primary-500: 156, 209, 231;
+  --c-primary-600: 179, 221, 235;
+  --c-primary-700: 202, 233, 239;
+  --c-primary-800: 225, 245, 243;
+  --c-primary-900: 248, 257, 247;
+
+  // SECONDARY COLOR (using the light blue as secondary)
+  --c-secondary-50: 240, 253, 250;
+  --c-secondary-100: 204, 251, 241;
+  --c-secondary-200: 153, 246, 228;
+  --c-secondary-300: 153, 246, 228;
+  --c-secondary-400: 45, 212, 191;
+  --c-secondary-500: 20, 184, 166;
+  --c-secondary-600: 13, 148, 136;
+  --c-secondary-700: 15, 118, 110;
+  --c-secondary-800: 17, 94, 89;
+  --c-secondary-900: 19, 78, 74;
+
+  // NEUTRAL COLOR (using white, black, and shades of gray)
+  --c-neutral-50: 249, 250, 251;
+  --c-neutral-100: 243, 244, 246;
+  --c-neutral-200: 229, 231, 235;
+  --c-neutral-300: 209, 213, 219;
+  --c-neutral-400: 156, 163, 175;
+  --c-neutral-500: 107, 114, 128;
+  --c-neutral-600: 75, 85, 99;
+  --c-neutral-700: 55, 65, 81;
+  --c-neutral-800: 31, 41, 55;
+  --c-neutral-900: 17, 24, 39;
+
+  // ACCENT COLOR (yellow)
+  --c-accent-50: 255, 251, 235;
+  --c-accent-100: 254, 243, 199;
+  --c-accent-200: 253, 230, 138;
+  --c-accent-300: 252, 211, 77;
+  --c-accent-400: 251, 191, 36;
+  --c-accent-500: 245, 158, 11;
+  --c-accent-600: 217, 119, 6;
+  --c-accent-700: 180, 83, 9;
+  --c-accent-800: 146, 64, 14;
+  --c-accent-900: 120, 53, 15;
+}
