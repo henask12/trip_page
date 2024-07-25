@@ -9,7 +9,7 @@ import { TaxonomyType } from "@/data/types";
 import NextBtn from "./NextBtn";
 import CardCategory4 from "./cards/CardCategory4";
 import { FC, useEffect, useState } from "react";
-import Heading from "./Heading";
+import Heading from "@/shared/Heading";
 
 export interface SectionSliderNewCategoriesProps {
   className?: string;
