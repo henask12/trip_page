@@ -21,6 +21,7 @@
     "react-datepicker": "^7.3.0",
     "react-dom": "^18",
     "react-hook-form": "^7.52.1",
+    "react-shimmer": "^3.2.0",
     "react-swipeable": "^7.0.1",
     "react-use": "^17.5.1",
     "sass": "^1.77.8",
