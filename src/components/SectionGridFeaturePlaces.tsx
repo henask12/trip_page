@@ -94,7 +94,7 @@ const SectionGridFeaturePlaces: FC<SectionGridFeaturePlacesProps> = ({
   return (
     <div className="nc-SectionGridFeaturePlaces relative">
       <HeaderFilter
-        tabActive={"New York"}
+        // tabActive={undefined}
         subHeading={subHeading}
         tabs={tabs}
         heading={heading}
