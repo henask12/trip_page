@@ -68,7 +68,7 @@ export default function GallerySlider({
       }}
     >
       <div
-        className={`relative group group/cardGallerySlider ${className}`}
+        className={`relative group group/cardGallerySlider  ${className}`}
         {...handlers}
       >
         {/* Main image */}
