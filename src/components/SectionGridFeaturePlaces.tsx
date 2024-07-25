@@ -11,6 +11,7 @@ import { AnimatePresence, motion, MotionConfig } from "framer-motion";
 import PrevBtn from "./PrevBtn";
 import NextBtn from "./NextBtn";
 import { variants } from "@/utils/animationVariants";
+import Skeleton from "@/shared/Skeleton";
 
 //
 export interface SectionGridFeaturePlacesProps {
@@ -33,13 +34,20 @@ const SectionGridFeaturePlaces: FC<SectionGridFeaturePlacesProps> = ({
   tabs = ["New York", "Tokyo", "Paris", "London"],
   cardType = "card2",
 }) => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  }, []);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const [numberOfItems, setNumberOfItems] = useState(3);
 
   const windowWidth = useWindowSize().width;
-  
+
   useEffect(() => {
     if (windowWidth < 640) {
       setNumberOfItems(1);
@@ -49,7 +57,6 @@ const SectionGridFeaturePlaces: FC<SectionGridFeaturePlacesProps> = ({
       setNumberOfItems(4);
     }
   }, [windowWidth]);
-
 
   const changeItemId = (newVal: number) => {
     if (newVal > currentIndex) {
@@ -92,68 +99,78 @@ const SectionGridFeaturePlaces: FC<SectionGridFeaturePlacesProps> = ({
   };
 
   return (
-    <div className="nc-SectionGridFeaturePlaces relative">
-      <HeaderFilter
-        // tabActive={undefined}
-        subHeading={subHeading}
-        tabs={tabs}
-        heading={heading}
-      />
-        <MotionConfig
-        transition={{
-          x: { type: "spring", stiffness: 300, damping: 30 },
-          opacity: { duration: 0.2 },
-        }}
-      >
-        <div className={`relative flow-root `} {...handlers}>
-          <div className={`flow-root overflow-hidden rounded-xl `}>
-            <motion.ul
-              initial={false}
-              className="relative whitespace-nowrap -mx-2 xl:-mx-4"
-            >
-              <AnimatePresence initial={false} custom={direction}>
-                {stayListings.map((item, indx) => (
-                  <motion.li
-                    className={`relative  inline-block px-2 xl:px-4 `}
-                    custom={direction}
-                    initial={{
-                      x: `${(currentIndex - 1) * -100}%`,
-                    }}
-                    animate={{
-                      x: `${currentIndex * -100}%`,
-                    }}
-                    variants={variants(200, 1)}
-                    key={indx}
-                    style={{
-                      width: `calc(1/${numberOfItems} * 100%)`,
-                    }}
-                  >
-                    {renderCard(item)}
-                  </motion.li>
-                ))}
-              </AnimatePresence>
-            </motion.ul>
-          </div>
+    <>
+      {loading ? (
+        <>
+          <Skeleton className="h-6 w-1/2 mb-4" />
+          <Skeleton className="h-4 w-full mb-2" />
+          <Skeleton className="h-4 w-full mb-2" />
+          <Skeleton className="h-4 w-full mb-2" />
+        </>
+      ) : (
+        <div className="nc-SectionGridFeaturePlaces relative">
+          <HeaderFilter
+            // tabActive={undefined}
+            subHeading={subHeading}
+            tabs={tabs}
+            heading={heading}
+          />
+          <MotionConfig
+            transition={{
+              x: { type: "spring", stiffness: 300, damping: 30 },
+              opacity: { duration: 0.2 },
+            }}
+          >
+            <div className={`relative flow-root `} {...handlers}>
+              <div className={`flow-root overflow-hidden rounded-xl `}>
+                <motion.ul
+                  initial={false}
+                  className="relative whitespace-nowrap -mx-2 xl:-mx-4"
+                >
+                  <AnimatePresence initial={false} custom={direction}>
+                    {stayListings.map((item, indx) => (
+                      <motion.li
+                        className={`relative  inline-block px-2 xl:px-4 `}
+                        custom={direction}
+                        initial={{
+                          x: `${(currentIndex - 1) * -100}%`,
+                        }}
+                        animate={{
+                          x: `${currentIndex * -100}%`,
+                        }}
+                        variants={variants(200, 1)}
+                        key={indx}
+                        style={{
+                          width: `calc(1/${numberOfItems} * 100%)`,
+                        }}
+                      >
+                        {renderCard(item)}
+                      </motion.li>
+                    ))}
+                  </AnimatePresence>
+                </motion.ul>
+              </div>
 
-          {currentIndex ? (
-            <PrevBtn
-              style={{ transform: "translate3d(0, 0, 0)" }}
-              onClick={() => changeItemId(currentIndex - 1)}
-              className="w-9 h-9 xl:w-12 xl:h-12 text-lg absolute -left-3 xl:-left-6 top-1/3 -translate-y-1/2 z-[1]"
-            />
-          ) : null}
+              {currentIndex ? (
+                <PrevBtn
+                  style={{ transform: "translate3d(0, 0, 0)" }}
+                  onClick={() => changeItemId(currentIndex - 1)}
+                  className="w-9 h-9 xl:w-12 xl:h-12 text-lg absolute -left-3 xl:-left-6 top-1/3 -translate-y-1/2 z-[1]"
+                />
+              ) : null}
 
-          {stayListings.length > currentIndex + numberOfItems ? (
-            <NextBtn
-              style={{ transform: "translate3d(0, 0, 0)" }}
-              onClick={() => changeItemId(currentIndex + 1)}
-              className="w-9 h-9 xl:w-12 xl:h-12 text-lg absolute -right-3 xl:-right-6 top-1/3 -translate-y-1/2 z-[1]"
-            />
-          ) : null}
+              {stayListings.length > currentIndex + numberOfItems ? (
+                <NextBtn
+                  style={{ transform: "translate3d(0, 0, 0)" }}
+                  onClick={() => changeItemId(currentIndex + 1)}
+                  className="w-9 h-9 xl:w-12 xl:h-12 text-lg absolute -right-3 xl:-right-6 top-1/3 -translate-y-1/2 z-[1]"
+                />
+              ) : null}
+            </div>
+          </MotionConfig>
         </div>
-      </MotionConfig>
-    
-    </div>
+      )}
+    </>
   );
 };
 
