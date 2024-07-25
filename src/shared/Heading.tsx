@@ -22,8 +22,11 @@ const Heading: React.FC<HeadingProps> = ({
     return null;
   }
 
-  const items = desc.split(",").map((item) => item.trim());
-  
+  // const items = desc.split(",").map((item) => item.trim());
+  const items = desc
+  .split(",")
+  .map((item) => item.trim())
+  .filter((item) => item.length > 0);
 
   const getIconForItem = (item: string) => {
     if (item.toLowerCase().includes("price match")) {
