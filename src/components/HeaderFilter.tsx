@@ -8,7 +8,7 @@ import ButtonSecondary from "@/shared/ButtonSecondary";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 
 export interface HeaderFilterProps {
-  tabActive: string;
+  tabActive?: string;
   tabs: string[];
   heading: ReactNode;
   subHeading?: ReactNode;
@@ -22,10 +22,13 @@ const HeaderFilter: FC<HeaderFilterProps> = ({
   heading = "",
   onClickTab = () => {},
 }) => {
-  const [tabActiveState, setTabActiveState] = useState(tabActive);
+
+  const [tabActiveState, setTabActiveState] = useState(tabActive || tabs[0]);
 
   useEffect(() => {
-    setTabActiveState(tabActive);
+    if (tabActive) {
+      setTabActiveState(tabActive);
+    }
   }, [tabActive]);
 
   const handleClickTab = (item: string) => {
