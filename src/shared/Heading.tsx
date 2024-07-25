@@ -52,7 +52,7 @@ const Heading: React.FC<HeadingProps> = ({
         }
       >
         <h2 className={`text-3xl md:text-4xl font-semibold`} {...args}>
-          {children || `Section Heading`}
+          {children}
         </h2>
         <div className="flex items-center space-x-4 overflow-x-auto">
           {items.map((item, index) => (
