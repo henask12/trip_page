@@ -101,6 +101,17 @@ export default function Home() {
               <SectionGridFeaturePlaces stayListings={DEMO_DATA} />
             </div>
           </div>
+          <div className="relative container py-16">
+            <BackgroundSection2 className="bg-indigo-50 dark:bg-black dark:bg-opacity-20 mt-8" />
+            <div className="px-4 md:px-8">
+              <SectionGridFeaturePlaces
+                tabs={["Addis Ababa", "Bahirdar", "ArbaMinch"]}
+                heading={"Popular Attractions"}
+                subHeading={""}
+                stayListings={DEMO_DATA}
+              />
+            </div>
+          </div>
         </div>
         <div className="container relative">
           <SectionDowloadApp />
