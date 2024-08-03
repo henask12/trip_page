@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "@/styles/index.scss";
 import "rc-slider/assets/index.css";
+import ClientProvider from "@/features/Provider/ClientProvider";
 // const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -17,7 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body >{children}</body>
+      <body>
+        {" "}
+        <ClientProvider>{children}</ClientProvider>
+      </body>
     </html>
   );
 }
