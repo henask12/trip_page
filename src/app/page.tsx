@@ -1,3 +1,4 @@
+
 import BackgroundSection from "@/components/BackgroundSection";
 import SectionSliderNewCategories from "@/components/SectionSliderNewCategories";
 import { StayDataType, TaxonomyType } from "@/data/types";
@@ -116,6 +117,7 @@ export default function Home() {
         <div className="container relative">
           <SectionDowloadApp />
         </div>
+       
       </div>
     </main>
   );
