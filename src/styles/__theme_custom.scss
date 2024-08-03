@@ -135,3 +135,44 @@
   box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
     rgba(17, 17, 26, 0.05) 0px 8px 32px;
 }
+
+// LISTING PAGE DETAIL
+.listingSection__wrap {
+  @apply w-full flex flex-col sm:rounded-2xl  dark:border-neutral-700 space-y-2 sm:space-y-2 pb-10 px-0 sm:p-4 xl:p-4;
+}
+
+// LISTING PAGE DETAIL
+.listingSectionSidebar__wrap {
+  @apply w-full flex flex-col rounded-2xl  dark:border-neutral-700 space-y-3 xl:space-y-3 pb-10 p-2 sm:p-4 xl:px-6 xl:py-4;
+}
+
+
+/* Styles for scrollbar handling */
+.scrollbar-hidden {
+  overflow-y: auto; /* Ensure scrollable content */
+  padding-right: 12px; /* Reserve space for scrollbar */
+}
+
+/* Styles for WebKit-based browsers (Chrome, Safari) */
+.scrollbar-hidden::-webkit-scrollbar {
+  width: 12px; /* Width of scrollbar */
+}
+
+.scrollbar-hidden::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+}
+
+/* Firefox */
+.scrollbar-hidden {
+  scrollbar-width: thin; /* Thin scrollbar for Firefox */
+}
+
+.scrollbar-hidden::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+}
+
+.scrollbar-hidden:hover {
+  scrollbar-width: thin; /* Ensure thin scrollbar on hover for Firefox */
+}
