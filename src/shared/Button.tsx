@@ -9,7 +9,8 @@ export interface ButtonProps {
   translate?: string;
   sizeClass?: string;
   fontSize?: string;
-  heightClass?: string;  // New prop
+  heightClass?: string;
+  widthClass?: string;
   loading?: boolean;
   disabled?: boolean;
   type?: ButtonHTMLAttributes<HTMLButtonElement>["type"];
