@@ -1,7 +1,8 @@
 "use client";
-import React, { FC, useState } from "react";
 
-import FlightSearchForm from "./(flight-search-form)/FlightSearchForm";
+import React, { FC, useState } from "react";
+import FlightSearchForm from "./flight-search-form/FlightSearchForm";
+
 
 export type SearchTab =
    "Hotels"
