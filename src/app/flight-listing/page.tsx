@@ -1,16 +1,17 @@
 "use client";
 
-import { FC, useEffect } from "react";
+import { FC, useCallback, useEffect } from "react";
 import FlightSearchForm from "../flight-search-form/FlightSearchForm";
 import DateTabs from "@/components/DateTabs";
 import React, { useState } from "react";
 import FlightCard from "@/components/cards/FlightCard";
 import Categories from "@/components/cards/flight/catagories";
-import { FlightCardProps } from "@/components/type";
+import { FlightCardProps, FlightSegment, isFlightSegment, isMultiCityData, isRoundTripData, MultiCityData, RoundTripData, TripType } from "@/components/type";
 import FlightFilter from "@/components/cards/flight/FlightFilter";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import FlightInfo from "@/components/cards/flight/FlightInfo";
+import useScrollHandler from "@/utils/useScroll";
 
 const dateRanges = [
   { range: "Aug 06 – Aug 20", price: "View" },
@@ -28,8 +29,31 @@ const dateRanges = [
   { range: "Sep 11 – Sep 25", price: "$125" },
   { range: "Sep 12 – Sep 26", price: "View" },
 ];
-const DEMO_DATA: FlightCardProps["data"][] = [
-  {
+const ONE_WAY_DEMO_DATA: FlightSegment = {
+  id: "1",
+  price: "$4,100",
+  departureTime: "10:00",
+  stops: "1 Stop",
+  arrivalTime: "20:00",
+  transitTime: "04:00",
+  duration: "06:00",
+  flightNumber: "KE0654",
+  origin: "ADD (Addis Ababa Airport)",
+  destination: "DXB (Dubai International Airport)",
+  airlines: {
+    logo: "https://www.gstatic.com/flights/airline_logos/70px/KE.png",
+    name: "Korean Air",
+  },
+  amenities: {
+    wifi: true,
+    usb: true,
+    meals: true,
+    entertainment: true,
+  },
+};
+
+const ROUND_TRIP_DEMO_DATA: RoundTripData = {
+  departingFlight: {
     id: "1",
     price: "$4,100",
     departureTime: "10:00",
@@ -51,61 +75,17 @@ const DEMO_DATA: FlightCardProps["data"][] = [
       entertainment: true,
     },
   },
-  {
+  returningFlight: {
     id: "2",
     price: "$3,380",
-    departureTime: "10:00",
-    stops: "1 Stop",
-    arrivalTime: "20:00",
-    origin: "ADD (Addis Ababa Airport)",
-    destination: "DXB (Dubai International Airport)",
-    duration: "06:00",
-    transitTime: "04:00",
-    flightNumber: "KE0654",
-    airlines: {
-      logo: "https://www.gstatic.com/flights/airline_logos/70px/SQ.png",
-      name: "Singapore Airlines",
-    },
-    amenities: {
-      wifi: true,
-      usb: true,
-      meals: true,
-      entertainment: true,
-    },
-  },
-  {
-    id: "3",
-    price: "$2,380",
-    departureTime: "10:00",
-    flightNumber: "KE0654",
-    origin: "ADD (Addis Ababa Airport)",
-    destination: "DXB (Dubai International Airport)",
-    duration: "06:00",
-    stops: "1 Stop",
-    arrivalTime: "20:00",
-    transitTime: "04:00",
-    airlines: {
-      logo: "https://www.gstatic.com/flights/airline_logos/70px/multi.png",
-      name: "Philippine Airlines",
-    },
-    amenities: {
-      wifi: true,
-      usb: true,
-      meals: true,
-      entertainment: true,
-    },
-  },
-  {
-    id: "1",
-    price: "$4,100",
-    departureTime: "10:00",
-    flightNumber: "KE0654",
-    duration: "06:00",
-    transitTime: "04:00",
-    stops: "1 Stop",
-    arrivalTime: "20:00",
-    origin: "ADD (Addis Ababa Airport)",
-    destination: "DXB (Dubai International Airport)",
+    departureTime: "15:00",
+    stops: "Direct",
+    arrivalTime: "22:00",
+    transitTime: "03:00",
+    duration: "05:00",
+    flightNumber: "KE0655",
+    origin: "DXB (Dubai International Airport)",
+    destination: "ADD (Addis Ababa Airport)",
     airlines: {
       logo: "https://www.gstatic.com/flights/airline_logos/70px/KE.png",
       name: "Korean Air",
@@ -116,124 +96,130 @@ const DEMO_DATA: FlightCardProps["data"][] = [
       meals: true,
       entertainment: true,
     },
-  },
-  {
-    id: "2",
-    price: "$3,380",
-    departureTime: "10:00",
-    flightNumber: "KE0654",
-    duration: "06:00",
-    transitTime: "04:00",
-    stops: "1 Stop",
-    arrivalTime: "20:00",
-    origin: "ADD (Addis Ababa Airport)",
-    destination: "DXB (Dubai International Airport)",
-    airlines: {
-      logo: "https://www.gstatic.com/flights/airline_logos/70px/SQ.png",
-      name: "Singapore Airlines",
+  }
+};
+const MULTI_CITY_DEMO_DATA: MultiCityData = {
+  legs: [
+    {
+      id: "1",
+      price: "$4,100",
+      departureTime: "10:00",
+      stops: "1 Stop",
+      arrivalTime: "20:00",
+      transitTime: "04:00",
+      duration: "06:00",
+      flightNumber: "KE0654",
+      origin: "ADD (Addis Ababa Airport)",
+      destination: "DXB (Dubai International Airport)",
+      airlines: {
+        logo: "https://www.gstatic.com/flights/airline_logos/70px/KE.png",
+        name: "Korean Air",
+      },
+      amenities: {
+        wifi: true,
+        usb: true,
+        meals: true,
+        entertainment: true,
+      },
     },
-    amenities: {
-      wifi: true,
-      usb: true,
-      meals: true,
-      entertainment: true,
+    {
+      id: "2",
+      price: "$3,380",
+      departureTime: "11:00",
+      stops: "Direct",
+      arrivalTime: "14:00",
+      duration: "03:00",
+      flightNumber: "SQ901",
+      origin: "DXB (Dubai International Airport)",
+      destination: "JFK (John F. Kennedy International Airport)",
+      airlines: {
+        logo: "https://www.gstatic.com/flights/airline_logos/70px/SQ.png",
+        name: "Singapore Airlines",
+      },
+      amenities: {
+        wifi: true,
+        usb: true,
+        meals: true,
+        entertainment: true,
+      },
     },
-  },
-  {
-    id: "1",
-    price: "$4,100",
-    departureTime: "10:00",
-    flightNumber: "KE0654",
-    duration: "06:00",
-    transitTime: "04:00",
-    origin: "ADD (Addis Ababa Airport)",
-    destination: "DXB (Dubai International Airport)",
-    stops: "1 Stop",
-    arrivalTime: "20:00",
-    airlines: {
-      logo: "https://www.gstatic.com/flights/airline_logos/70px/KE.png",
-      name: "Korean Air",
-    },
-    amenities: {
-      wifi: true,
-      usb: true,
-      meals: true,
-      entertainment: true,
-    },
-  },
-  {
-    id: "2",
-    price: "$3,380",
-    departureTime: "10:00",
-    flightNumber: "KE0654",
-    origin: "ADD (Addis Ababa Airport)",
-    destination: "DXB (Dubai International Airport)",
-    transitTime: "04:00",
-    duration: "06:00",
-    stops: "1 Stop",
-    arrivalTime: "20:00",
-    airlines: {
-      logo: "https://www.gstatic.com/flights/airline_logos/70px/SQ.png",
-      name: "Singapore Airlines",
-    },
-    amenities: {
-      wifi: true,
-      usb: true,
-      meals: true,
-      entertainment: true,
-    },
-  },
-];
+    {
+      id: "3",
+      price: "$2,380",
+      departureTime: "16:00",
+      stops: "1 Stop",
+      arrivalTime: "22:00",
+      transitTime: "02:00",
+      duration: "05:00",
+      flightNumber: "BA123",
+      origin: "JFK (John F. Kennedy International Airport)",
+      destination: "LAX (Los Angeles International Airport)",
+      airlines: {
+        logo: "https://www.gstatic.com/flights/airline_logos/70px/BA.png",
+        name: "British Airways",
+      },
+      amenities: {
+        wifi: true,
+        usb: true,
+        meals: true,
+        entertainment: true,
+      },
+    }
+  ]
+};
+
 const FlightListingPage: FC = () => {
-  const { flightSections } = useSelector(
-    (state: RootState) => state.flightSearch
-  );
   const [filter, setFilter] = useState<string | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
-  const filteredData = DEMO_DATA.filter((stay) => {
-    if (!filter) return true;
+  const [showFlightInfo, setShowFlightInfo] = useState<boolean>(false);
 
-    // return stay.category === filter;
-  }).slice(0, 10); // Limiting to 10 items
-  const [showFlightInfo, setShowFlightInfo] = useState(false);
+  // Correctly typing handleSetShowFlightInfo
+  const handleSetShowFlightInfo = useCallback<React.Dispatch<React.SetStateAction<boolean>>>(
+    (newState) => {
+      setShowFlightInfo(newState);
+    },
+    []
+  );
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const triggerPosition = 100; // Adjust this value as needed
-      setShowFlightInfo(scrollPosition > triggerPosition);
-    };
+  useScrollHandler({ setShowFlightInfo: handleSetShowFlightInfo });
 
-    // Debounce the scroll handler
-    const debouncedHandleScroll = debounce(handleScroll, 50);
 
-    window.addEventListener("scroll", debouncedHandleScroll);
-    return () => {
-      window.removeEventListener("scroll", debouncedHandleScroll);
-    };
-  }, []);
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const scrollPosition = window.scrollY;
+  //     const triggerPosition = 100;
+  //     setShowFlightInfo(scrollPosition > triggerPosition);
+  //   };
 
-  // Debounce function with TypeScript typings
-  function debounce<T extends (...args: any[]) => void>(
-    func: T,
-    wait: number
-  ): (...args: Parameters<T>) => void {
-    let timeout: NodeJS.Timeout;
-    return function (...args: Parameters<T>) {
-      if (timeout) clearTimeout(timeout);
-      timeout = setTimeout(() => func(...args), wait);
-    };
-  }
+  //   const debouncedHandleScroll = debounce(handleScroll, 50);
 
+  //   window.addEventListener("scroll", debouncedHandleScroll);
+  //   return () => {
+  //     window.removeEventListener("scroll", debouncedHandleScroll);
+  //   };
+  // }, []);
+
+  // function debounce<T extends (...args: any[]) => void>(
+  //   func: T,
+  //   wait: number
+  // ): (...args: Parameters<T>) => void {
+  //   let timeout: NodeJS.Timeout;
+  //   return function (...args: Parameters<T>) {
+  //     if (timeout) clearTimeout(timeout);
+  //     timeout = setTimeout(() => func(...args), wait);
+  //   };
+  // }
   const renderSidebar = () => {
     return (
-      <div className="w-full mt-48 flex flex-col items-center text-center sm:rounded-2xl space-y-2 sm:space-y-2 px-0 sm:p-4 xl:p-2 relative">
-        <div className="absolute inset-y-0 right-0 w-[20vw] dark:hidden"></div>
-        <div className="absolute bottom-0 right-0 top-16 hidden h-48 w-px bg-gradient-to-t from-slate-800 dark:block"></div>
-        <div className="absolute bottom-0 right-0 top-54 hidden w-px bg-slate-800 dark:block"></div>
-        <div className="sticky top-[4.75rem] -ml-0.5 h-[calc(100vh-4.75rem)] overflow-y-auto py-8 pl-0.3 pr-4 xl:pr-8 scrollbar-hidden">
-          <FlightFilter />
+      <div className="listingSectionSidebar__wrap">
+        <div className="w-full  mt-48 flex flex-col items-center text-center sm:rounded-2xl space-y-2 sm:space-y-2 px-0 sm:p-4 xl:p-2 relative">
+          <div className="absolute inset-y-0 right-0 w-[20vw] dark:hidden"></div>
+          <div className="absolute bottom-0 right-0 top-16 hidden h-48 w-px bg-gradient-to-t from-slate-800 dark:block"></div>
+          <div className="absolute bottom-0 right-0 top-54 hidden w-px bg-slate-800 dark:block"></div>
+          <div className="sticky top-[4.75rem] -ml-0.5 h-[calc(100vh-4.75rem)] overflow-y-auto py-8 pl-0.3 pr-4 xl:pr-8 scrollbar-hidden">
+            <FlightFilter />
+          </div>
         </div>
       </div>
     );
@@ -247,22 +233,94 @@ const FlightListingPage: FC = () => {
   const handleSheetClose = () => {
     setOpenSheetId(null);
   };
+
+  const [tripType, setTripType] = useState<TripType>('round-trip');
+  const [data, setData] = useState<FlightSegment | RoundTripData | MultiCityData>(ROUND_TRIP_DEMO_DATA);
+  const [selectedDepartingFlight, setSelectedDepartingFlight] = useState<string | null>(null);
+  const [selectedLeg, setSelectedLeg] = useState<number>(0);
+
+
+  useEffect(() => {
+    // Set data based on tripType
+    if (tripType === 'one-way') {
+      setData(ONE_WAY_DEMO_DATA);
+    } else if (tripType === 'round-trip') {
+      setData(ROUND_TRIP_DEMO_DATA);
+    } else if (tripType === 'multi-city') {
+      setData(MULTI_CITY_DEMO_DATA);
+    }
+  }, [tripType]);
+
   const renderSection1 = () => {
-    return (
-      <div className="listingSection__wrap mt-48">
-        <Categories onFilterChange={setFilter} />
-        {DEMO_DATA.filter((_, i) => i < 10).map((stay) => (
+    if (tripType === 'multi-city' && isMultiCityData(data)) {
+      return (
+        <div className="listingSection__wrap mt-48">
+          <Categories onFilterChange={setFilter} />
           <FlightCard
-            key={stay.id}
-            data={stay}
-            isSheetOpen={openSheetId === stay.id}
-            setIsSheetOpen={() => handleSheetOpen(stay.id)}
+            key={data.legs[selectedLeg].id}
+            data={data.legs[selectedLeg]}
+            isSheetOpen={openSheetId === data.legs[selectedLeg].id}
+            setIsSheetOpen={() => setOpenSheetId(data.legs[selectedLeg].id)}
             onCloseSheet={handleSheetClose}
+            tripType={tripType}
           />
-        ))}
-      </div>
-    );
+          {selectedLeg < data.legs.length - 1 && (
+            <button
+              onClick={() => setSelectedLeg(selectedLeg + 1)}
+              className="mt-4 p-2 bg-blue-500 text-white rounded"
+            >
+              Show Next Leg
+            </button>
+          )}
+        </div>
+      );
+    } else if (tripType === 'round-trip' && isRoundTripData(data)) {
+      return (
+        <div className="listingSection__wrap mt-48">
+          <Categories onFilterChange={setFilter} />
+          {selectedDepartingFlight ? (
+            <>
+              <FlightCard
+                key={data.returningFlight.id}
+                data={data.returningFlight}
+                isSheetOpen={openSheetId === data.returningFlight.id}
+                setIsSheetOpen={() => setOpenSheetId(data.returningFlight.id)}
+                onCloseSheet={handleSheetClose}
+                tripType={tripType}
+              />
+            </>
+          ) : (
+            <FlightCard
+              key={data.departingFlight.id}
+              data={data.departingFlight}
+              isSheetOpen={openSheetId === data.departingFlight.id}
+              setIsSheetOpen={() => setOpenSheetId(data.departingFlight.id)}
+              onCloseSheet={handleSheetClose}
+              tripType={tripType}
+              onSelect={() => setSelectedDepartingFlight(data.departingFlight.id)}
+            />
+          )}
+        </div>
+      );
+    } else if (tripType === 'one-way' && isFlightSegment(data)) {
+      return (
+        <div className="listingSection__wrap mt-48">
+          <Categories onFilterChange={setFilter} />
+          <FlightCard
+            key={data.id}
+            data={data}
+            isSheetOpen={openSheetId === data.id}
+            setIsSheetOpen={() => setOpenSheetId(data.id)}
+            onCloseSheet={handleSheetClose}
+            tripType={tripType}
+          />
+        </div>
+      );
+    } else {
+      return null;
+    }
   };
+  
 
   return (
     <main className="overflow-hidden bg-blue-400 relative ">
@@ -292,7 +350,7 @@ const FlightListingPage: FC = () => {
               <DateTabs dateRanges={dateRanges} />
             </div>
             <div className="block flex-grow mb-24 lg:mb-0">
-              <div className="lg:sticky lg:top-24">{renderSidebar()}</div>
+              <div className="sticky top-24 ">{renderSidebar()}</div>
             </div>
             <div className="w-full lg:w-4/5 xl:w-2/3 space-y-4 lg:space-y-6 lg:pl-4 flex-shrink-0">
               {renderSection1()}

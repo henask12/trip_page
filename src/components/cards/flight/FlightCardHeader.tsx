@@ -7,11 +7,12 @@ import {
   GlobeAltIcon,
   WifiIcon,
 } from "@heroicons/react/24/outline";
-import { FlightCardProps } from "@/components/type";
+import { FlightCardProps, FlightSegment } from "@/components/type";
 import PopoverContent from "./PopoverContent";
 import AmenityIcon from "./AmenityIcon";
 
-const FlightCardHeader: FC<{ data: FlightCardProps["data"] }> = ({ data }) => {
+const FlightCardHeader: FC<{ data: FlightSegment }> = ({ data }) => {
+
   const [isPopoverVisible, setIsPopoverVisible] = useState(false);
   const [isPopoverAmenitiesVisible, setIsPopoverAmenitiesVisible] =
     useState(false);
@@ -146,11 +147,7 @@ const FlightCardHeader: FC<{ data: FlightCardProps["data"] }> = ({ data }) => {
           </span>
         </div>
         <div className="text-sm text-neutral-500 font-normal mt-0.5 flex justify-between">
-          <span
-            className="hover:text-blue-500 cursor-pointer"
-          >
-            HKG T1
-          </span>
+          <span className="hover:text-blue-500 cursor-pointer">HKG T1</span>
           <span>Nonstop</span>
           <span className="hover:text-blue-500 cursor-pointer">BKK T1</span>
         </div>
@@ -186,15 +183,28 @@ const FlightCardHeader: FC<{ data: FlightCardProps["data"] }> = ({ data }) => {
                   <div className="relative w-1/4">
                     <div className="border-l-2 border-gray-300 absolute left-1/2 transform -translate-x-1/2 h-full"></div>
                   </div>
-                  <div className="w-3/4">
-                    <div className="mb-6">
-                      <div className="text-gray-900 dark:text-white font-medium">
-                        {data.origin ?? "Hong Kong International Airport T1"}
-                      </div>
+                  <div className="flex my-5 md:my-0">
+                    <div className="flex-shrink-0 flex flex-col items-center py-2">
+                      <span className="block w-6 h-6 rounded-full border border-neutral-400"></span>
+                      <span className="block flex-grow border-l border-neutral-400 border-dashed my-1"></span>
+                      <span className="block w-6 h-6 rounded-full border border-neutral-400"></span>
                     </div>
-                    <div>
-                      <div className="text-gray-900 dark:text-white font-medium">
-                        {data.destination ?? "Suvarnabhumi Airport"}
+                    <div className="ml-4 space-y-10 text-sm">
+                      <div className="flex flex-col space-y-1">
+                        <span className="text-neutral-500 dark:text-neutral-400">
+                          Departure: {data.departureTime}
+                        </span>
+                        <span className="font-semibold">
+                          Tokyo International Airport (HND)
+                        </span>
+                      </div>
+                      <div className="flex flex-col space-y-1">
+                        <span className="text-neutral-500 dark:text-neutral-400">
+                          Arrival: {data.arrivalTime}
+                        </span>
+                        <span className="font-semibold">
+                          Singapore International Airport (SIN)
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -204,7 +214,6 @@ const FlightCardHeader: FC<{ data: FlightCardProps["data"] }> = ({ data }) => {
           </Popover>
         )}
       </div>
-
 
       <div className="flex-[4] whitespace-nowrap sm:text-right">
         <div>

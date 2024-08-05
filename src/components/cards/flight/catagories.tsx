@@ -1,4 +1,5 @@
 "use client";
+import { FlightSegment } from "@/components/type";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
 import React, { useState, useEffect } from "react";
 
@@ -13,6 +14,7 @@ interface Category {
 } 
 interface CategoriesProps {
   onFilterChange: (filter: string | null) => void;
+  // data: FlightSegment[]
 }
 const categories: Category[] = [
   {
