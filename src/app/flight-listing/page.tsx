@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useEffect } from "react";
+import { FC, useCallback, useEffect } from "react";
 import FlightSearchForm from "../flight-search-form/FlightSearchForm";
 import DateTabs from "@/components/DateTabs";
 import React, { useState } from "react";
@@ -11,6 +11,7 @@ import FlightFilter from "@/components/cards/flight/FlightFilter";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import FlightInfo from "@/components/cards/flight/FlightInfo";
+import useScrollHandler from "@/utils/useScroll";
 
 const dateRanges = [
   { range: "Aug 06 – Aug 20", price: "View" },
@@ -196,35 +197,19 @@ const FlightListingPage: FC = () => {
 
     // return stay.category === filter;
   }).slice(0, 10); // Limiting to 10 items
-  const [showFlightInfo, setShowFlightInfo] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const triggerPosition = 100; // Adjust this value as needed
-      setShowFlightInfo(scrollPosition > triggerPosition);
-    };
+  const [showFlightInfo, setShowFlightInfo] = useState<boolean>(false);
 
-    // Debounce the scroll handler
-    const debouncedHandleScroll = debounce(handleScroll, 50);
+  // Correctly typing handleSetShowFlightInfo
+  const handleSetShowFlightInfo = useCallback<React.Dispatch<React.SetStateAction<boolean>>>(
+    (newState) => {
+      setShowFlightInfo(newState);
+    },
+    []
+  );
 
-    window.addEventListener("scroll", debouncedHandleScroll);
-    return () => {
-      window.removeEventListener("scroll", debouncedHandleScroll);
-    };
-  }, []);
+  useScrollHandler({ setShowFlightInfo: handleSetShowFlightInfo });
 
-  // Debounce function with TypeScript typings
-  function debounce<T extends (...args: any[]) => void>(
-    func: T,
-    wait: number
-  ): (...args: Parameters<T>) => void {
-    let timeout: NodeJS.Timeout;
-    return function (...args: Parameters<T>) {
-      if (timeout) clearTimeout(timeout);
-      timeout = setTimeout(() => func(...args), wait);
-    };
-  }
 
   const renderSidebar = () => {
     return (
