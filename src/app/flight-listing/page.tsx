@@ -9,9 +9,11 @@ import Categories from "@/components/cards/flight/catagories";
 import { FlightCardProps } from "@/components/type";
 import FlightFilter from "@/components/cards/flight/FlightFilter";
 import { RootState } from "@/store/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import FlightInfo from "@/components/cards/flight/FlightInfo";
 import useScrollHandler from "@/utils/useScroll";
+import { setFlightSearchState } from "@/features/flightSearch/flightSearchSlice";
+import { roundTripBusiness } from "@/data/searchData";
 
 const dateRanges = [
   { range: "Aug 06 – Aug 20", price: "View" },
@@ -186,21 +188,31 @@ const DEMO_DATA: FlightCardProps["data"][] = [
   },
 ];
 const FlightListingPage: FC = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setFlightSearchState(roundTripBusiness));
+  }, [dispatch]);
+
+
   const { flightSections } = useSelector(
     (state: RootState) => state.flightSearch
   );
+
+ useEffect(() => {
+    console.log(flightSections);
+  }, [flightSections]);
+
   const [filter, setFilter] = useState<string | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const filteredData = DEMO_DATA.filter((stay) => {
     if (!filter) return true;
 
-    // return stay.category === filter;
-  }).slice(0, 10); // Limiting to 10 items
+  }).slice(0, 10); 
 
   const [showFlightInfo, setShowFlightInfo] = useState<boolean>(false);
 
-  // Correctly typing handleSetShowFlightInfo
   const handleSetShowFlightInfo = useCallback<React.Dispatch<React.SetStateAction<boolean>>>(
     (newState) => {
       setShowFlightInfo(newState);
