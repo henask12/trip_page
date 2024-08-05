@@ -51,7 +51,7 @@ export const Sheet: React.FC<SheetProps> = ({ open, onClose, side = 'right', tit
 
   return (
     <>
-      {open && (
+   {open && (
         <>
           <div
             className={clsx(
@@ -93,7 +93,7 @@ export const Sheet: React.FC<SheetProps> = ({ open, onClose, side = 'right', tit
                   </button>
                 ))}
               </div>
-              <div className="mt-4 h-64 overflow-auto">
+              <div className="mt-4 overflow-auto">
                 {tabs[activeTab]?.content}
               </div>
             </div>
@@ -103,3 +103,5 @@ export const Sheet: React.FC<SheetProps> = ({ open, onClose, side = 'right', tit
     </>
   );
 };
+
+

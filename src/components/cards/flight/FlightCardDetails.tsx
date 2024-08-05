@@ -1,11 +1,85 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Sheet } from "./sheet";
+import ButtonPrimary from "@/components/ButtonPrimary";
+import ButtonSecondary from "@/shared/ButtonSecondary";
+import { CheckIcon } from "@heroicons/react/24/solid";
+import PrevBtn from "@/components/PrevBtn";
+import NextBtn from "@/components/NextBtn";
 
-const tabs = [
-  { label: "Tab 1", content: <div className="p-4">Content for Tab 1</div> },
-  { label: "Tab 2", content: <div className="p-4">Content for Tab 2</div> },
-  { label: "Tab 3", content: <div className="p-4">Content for Tab 3</div> },
+
+export interface PricingItem {
+  isRecommended: boolean;
+  name: string;
+  pricing: string;
+  per: string;
+  features: string[];
+  baggage: {
+    carryOn: string;
+    checked: string;
+  };
+  fareRules: {
+    cancellationFee: string;
+    changeFees: string;
+  };
+}
+
+const pricings: PricingItem[] = [
+  {
+    isRecommended: false,
+    name: "Economy",
+    pricing: "$5",
+    per: "/mo",
+    features: ["Automated Reporting", "Faster Processing", "Customizations"],
+    baggage: {
+      carryOn: "1 piece up to 7kg",
+      checked: "None",
+    },
+    fareRules: {
+      cancellationFee: "from $14",
+      changeFees: "No Change Fees",
+    },
+  },
+  {
+    isRecommended: true,
+    name: "Economy Flex",
+    pricing: "$15",
+    per: "/mo",
+    features: [
+      "Everything in Starter",
+      "100 Builds",
+      "Progress Reports",
+      "Premium Support",
+    ],
+    baggage: {
+      carryOn: "1 piece up to 7kg",
+      checked: "2 pieces up to 23kg each",
+    },
+    fareRules: {
+      cancellationFee: "from $14",
+      changeFees: "No Change Fees",
+    },
+  },
+  {
+    isRecommended: false,
+    name: "Economy Plus",
+    pricing: "$25",
+    per: "/mo",
+    features: [
+      "Everything in Basic",
+      "Unlimited Builds",
+      "Advanced Analytics",
+      "Company Evaluations",
+    ],
+    baggage: {
+      carryOn: "2 pieces up to 7kg each",
+      checked: "2 pieces up to 23kg each",
+    },
+    fareRules: {
+      cancellationFee: "from $14",
+      changeFees: "No Change Fees",
+    },
+  },
 ];
 
 const FlightDetail: React.FC<{
@@ -15,8 +89,40 @@ const FlightDetail: React.FC<{
   isSheetOpen: boolean;
   setIsSheetOpen: () => void;
   onCloseSheet: () => void;
-}> = ({ data, onSelect, isSelected, isSheetOpen, setIsSheetOpen, onCloseSheet }) => {
+}> = ({
+  data,
+  onSelect,
+  isSelected,
+  isSheetOpen,
+  setIsSheetOpen,
+  onCloseSheet,
+}) => {
   const [isSelectedLocal, setIsSelectedLocal] = useState<boolean>(isSelected);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const itemsPerPage = 2;
+  const totalItems = pricings.length;
+
+  const handleNext = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex + itemsPerPage < totalItems
+        ? prevIndex + itemsPerPage
+        : prevIndex
+    );
+  };
+
+  const handlePrev = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex - itemsPerPage >= 0 ? prevIndex - itemsPerPage : prevIndex
+    );
+  };
+
+  const visibleItems = pricings.slice(
+    currentIndex,
+    currentIndex + itemsPerPage
+  );
+
+  const showPrev = currentIndex > 0;
+  const showNext = currentIndex + itemsPerPage < totalItems;
 
   const handleSelectClick = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -26,65 +132,192 @@ const FlightDetail: React.FC<{
 
   const handleSheetClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-    // setIsSheetOpen(isSheetOpen ? null : data.id);
     setIsSheetOpen();
   };
 
-  return (
+  const renderPricingItem = (pricing: PricingItem, index: number) => (
     <div
-      onClick={handleSheetClick}
-      className={`relative cursor-pointer p-4 border rounded-lg shadow-md transition-transform ${isSelectedLocal ? "bg-blue-100 border-blue-500" : "border-neutral-300"}`}
+      key={index}
+      className={`h-full relative px-6 py-8 rounded-3xl bg-white border-2 flex flex-col overflow-hidden ${
+        pricing.isRecommended
+          ? "border-primary-500"
+          : "border-neutral-100 dark:border-neutral-700"
+      }`}
     >
-      <div className="flex flex-col md:flex-row">
-        <div className="w-24 md:w-20 lg:w-24 flex-shrink-0 md:pt-7">
-          <Image
-            src={data.airlines.logo}
-            className="w-10"
-            alt="Airline Logo"
-            sizes="40px"
-            width={40}
-            height={40}
-          />
-        </div>
-        <div className="flex my-5 md:my-0">
-          <div className="flex-shrink-0 flex flex-col items-center py-2">
-            <span className="block w-6 h-6 rounded-full border border-neutral-400"></span>
-            <span className="block flex-grow border-l border-neutral-400 border-dashed my-1"></span>
-            <span className="block w-6 h-6 rounded-full border border-neutral-400"></span>
-          </div>
-          <div className="ml-4 space-y-10 text-sm">
-            <div className="flex flex-col space-y-1">
-              <span className="text-neutral-500 dark:text-neutral-400">Departure: {data.departureTime}</span>
-              <span className="font-semibold">Tokyo International Airport (HND)</span>
-            </div>
-            <div className="flex flex-col space-y-1">
-              <span className="text-neutral-500 dark:text-neutral-400">Arrival: {data.arrivalTime}</span>
-              <span className="font-semibold">Singapore International Airport (SIN)</span>
-            </div>
-          </div>
-        </div>
-        <div className="border-l border-neutral-200 dark:border-neutral-700 md:mx-6 lg:mx-10"></div>
-        <ul className="text-sm text-neutral-500 dark:text-neutral-400 space-y-1 md:space-y-2">
-          <li>Trip time: {data.duration}</li>
-          <li>ANA · Business class · Boeing 787 · NH 847</li>
-        </ul>
+      {pricing.isRecommended && (
+        <span className="bg-teal-500 text-white px-3 py-1 tracking-widest text-xs absolute right-3 top-3 rounded-full z-10">
+          Recommended
+        </span>
+      )}
+      <div className="mb-2">
+        <h3 className="block text-sm uppercase tracking-widest text-neutral-6000 dark:text-neutral-300 mb-2 font-medium">
+          {pricing.name}
+        </h3>
+        <hr />
       </div>
-      <button
-        onClick={handleSelectClick}
-        className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 rounded-lg shadow-md hover:bg-blue-600"
-      >
-        {isSelectedLocal ? "Deselect" : "Select"}
-      </button>
 
+      {/* Baggage Rules  */}
+      <div className="space-y-1 mb-4">
+      <h5 className="block text-neutral-6000 dark:text-neutral-300 mb-2 font-medium">
+          Baggage
+        </h5>
+        <div className="flex items-center">
+          <span className="mr-4 inline-flex cursor-pointer flex-shrink-0 text-primary-6000" onClick={handleSheetClick}>
+            <CheckIcon className="w-5 h-5" aria-hidden="true" />
+          </span>
+          <span className="text-neutral-700 cursor-pointer dark:text-neutral-300" onClick={handleSheetClick}>
+            <strong>Carry-on Baggage:</strong> {pricing.baggage.carryOn}
+          </span>
+        </div>
+        <div className="flex items-center">
+          <span className="mr-4 inline-flex cursor-pointer flex-shrink-0 text-primary-6000" onClick={handleSheetClick}>
+            <CheckIcon className="w-5 h-5" aria-hidden="true" />
+          </span>
+          <span className="text-neutral-700 cursor-pointer dark:text-neutral-300" onClick={handleSheetClick}>
+            <strong>Checked Baggage:</strong> {pricing.baggage.checked}
+          </span>
+        </div>
+      </div>
+
+      {/* Fare Rules  */}
+      <div className="space-y-1 mb-4">
+      <h5 className="block text-neutral-6000 dark:text-neutral-300 mb-2 font-medium">
+          Fare Rules
+        </h5>
+        <div className="flex items-center">
+          <span className="mr-4 inline-flex cursor-pointer flex-shrink-0 text-primary-6000" onClick={handleSheetClick}>
+            <CheckIcon className="w-5 h-5" aria-hidden="true" />
+          </span>
+          <span className="text-neutral-700 cursor-pointer dark:text-neutral-300" onClick={handleSheetClick}>
+            <strong>Cancellation Fee:</strong>{" "}
+            {pricing.fareRules.cancellationFee}
+          </span>
+        </div>
+        <div className="flex items-center">
+          <span className="mr-4 cursor-pointer inline-flex flex-shrink-0 text-primary-6000" onClick={handleSheetClick}>
+            <CheckIcon className="w-5 h-5" aria-hidden="true" />
+          </span>
+          <span className="text-neutral-700 cursor-pointer dark:text-neutral-300" onClick={handleSheetClick}>
+            <strong>Change Fees:</strong> {pricing.fareRules.changeFees}
+          </span>
+        </div>
+      </div>
+
+      <div className="flex flex-col mt-auto">
+        <ButtonSecondary>
+          <span className="font-medium">Book</span>
+        </ButtonSecondary>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      <section className="text-neutral-600 text-sm md:text-base overflow-hidden relative">
+        <div className="grid lg:grid-cols-2 gap-2">
+          {visibleItems.map(renderPricingItem)}
+        </div>
+        {totalItems > itemsPerPage && (
+          <>
+            {showPrev && (
+              <PrevBtn
+                style={{ transform: "translate3d(0, 0, 0)" }}
+                onClick={handlePrev}
+                className="w-9 h-9 xl:w-12 xl:h-12 text-lg absolute left-0 top-1/2 transform -translate-y-1/2 z-10"
+              />
+            )}
+            {showNext && (
+              <NextBtn
+                style={{ transform: "translate3d(0, 0, 0)" }}
+                onClick={handleNext}
+                className="w-9 h-9 xl:w-12 xl:h-12 text-lg absolute right-0 top-1/2 transform -translate-y-1/2 z-10"
+              />
+            )}
+          </>
+        )}
+      </section>
       <Sheet
         open={isSheetOpen}
         onClose={onCloseSheet}
         side="right"
-        title="Sheet with Tabs"
+        title="Baggage Allowance & Policies"
         tabs={tabs}
       />
-    </div>
+    </>
   );
 };
 
 export default FlightDetail;
+const bookingInfo = (
+  <div>
+    <h3 className="font-bold">Ticket Issuing Time</h3>
+    <p>Once payment is confirmed, tickets will be issued within 4 days.</p>
+    <h3 className="font-bold">Using Tickets in Order</h3>
+    <p>
+      According to the airline's regulations, the tickets you have booked must be used in the order of the flight segments...
+    </p>
+    <h3 className="font-bold">Notes</h3>
+    <p>
+      Addis Ababa - Dubai, Dubai - Addis Ababa: Passengers should carry a yellow fever vaccination certificate...
+    </p>
+  </div>
+);
+
+const baggageAllowance = (
+  <div>
+    <h3 className="font-bold">Depart: Addis Ababa - Dubai</h3>
+    <p><strong>Personal Item</strong>: The total weight per person cannot exceed 5 kg...</p>
+    <p><strong>Carry-on Baggage</strong>: 1 piece(s) per person, 7 kg per piece...</p>
+    <p><strong>Checked Baggage</strong>: 2 piece(s) per person, 23 kg per piece...</p>
+    <h3 className="font-bold">Return: Dubai - Addis Ababa</h3>
+    <p><strong>Personal Item</strong>: The total weight per person cannot exceed 5 kg...</p>
+  </div>
+);
+
+const cancellationPolicy = (
+  <div className="h-screen">
+    <h3 className="font-bold">Flight Cancellation & Change Policies</h3>
+    <p>
+      The ticket policy is subject to the rules listed below, and these might differ from policies listed on the airline's website...
+    </p>
+    <div className="overflow-auto">
+      <table className="w-full table-auto border-collapse border border-gray-200 text-left">
+        <thead>
+          <tr>
+            <th className="border-b border-gray-200 p-2">Status</th>
+            <th className="border-b border-gray-200 p-2">Request Time</th>
+            <th className="border-b border-gray-200 p-2">Adult Tickets</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td className="border-b border-gray-200 p-2">Departure flight</td>
+            <td className="border-b border-gray-200 p-2">24 or more hours before departure</td>
+            <td className="border-b border-gray-200 p-2">$330.00</td>
+          </tr>
+          <tr>
+            <td className="border-b border-gray-200 p-2">Within 24 hours before departure</td>
+            <td className="border-b border-gray-200 p-2">$330.00</td>
+          </tr>
+          <tr>
+            <td className="border-b border-gray-200 p-2">Return flight</td>
+            <td className="border-b border-gray-200 p-2">24 or more hours before departure</td>
+            <td className="border-b border-gray-200 p-2">Non-refundable</td>
+          </tr>
+          <tr>
+            <td className="border-b border-gray-200 p-2">Within 24 hours before departure</td>
+            <td className="border-b border-gray-200 p-2">Non-refundable</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p className="mt-4">
+      <strong>Additional Information</strong>: For cancellations, an additional $18.10 service fee will be charged by the ticket agency...
+    </p>
+  </div>
+);
+const tabs = [
+  { label: 'Booking Information', content: bookingInfo },
+  { label: 'Baggage Allowance', content: baggageAllowance },
+  { label: 'Cancellation Policy', content: cancellationPolicy },
+];
