@@ -31,8 +31,8 @@ export const oneWayEconomy: FormValues = {
 export const roundTripBusiness: FormValues = {
   flightSections: [
     {
-      origin: "Los Angeles",
-      destination: "Paris",
+      origin: "LAX",
+      destination: "ADD",
       flightDates: [
         new Date("2024-09-01T00:00:00Z"),
         new Date("2024-09-15T00:00:00Z"),
