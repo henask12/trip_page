@@ -17,6 +17,7 @@ export interface FlightCardProps {
   isSheetOpen: boolean;
   setIsSheetOpen: () => void;
   onCloseSheet: () => void;
+  onSelect?: (id: string) => void;
   data: {
     id: string;
     price?: string;
