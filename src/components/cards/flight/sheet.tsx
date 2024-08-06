@@ -55,7 +55,7 @@ export const Sheet: React.FC<SheetProps> = ({ open, onClose, side = 'right', tit
         <>
           <div
             className={clsx(
-              'fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity z-40',
+              'fixed inset-0 bg-black/60 backdrop-blur-sm  transition-opacity z-40',
               'opacity-100 transition-opacity duration-300'
             )}
             aria-hidden="true"
@@ -78,7 +78,7 @@ export const Sheet: React.FC<SheetProps> = ({ open, onClose, side = 'right', tit
               <span className="text-lg font-bold">&times;</span>
             </button>
             <h2 className="text-lg font-semibold">{title}</h2>
-            <div className="mt-4">
+            <div className="mt-4 ">
               <div className="flex border-b">
                 {tabs.map((tab, index) => (
                   <button
