@@ -2,26 +2,29 @@ import React, { useState, useEffect } from 'react';
 import PrevBtn from './PrevBtn';
 import NextBtn from './NextBtn';
 
-interface DateRange {
+export interface DateRange {
   range: string;
   price?: string;
 }
 
 interface DateTabsProps {
   dateRanges: DateRange[];
+  itemsPer?: number
 }
 
-// Function to determine ITEMS_PER_PAGE based on screen width
-const getItemsPerPage = (width: number): number => {
-  if (width <= 600) return 3; 
-  if(width <= 1100 && width >600) return 5; 
-  return 7;
-};
-
-const DateTabs: React.FC<DateTabsProps> = ({ dateRanges }) => {
+const DateTabs: React.FC<DateTabsProps> = ({ dateRanges, itemsPer }) => {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
-  const [itemsPerPage, setItemsPerPage] = useState<number>(getItemsPerPage(window.innerWidth));
 
+  const getItemsPerPage = (width: number): number => {
+    if (width <= 600) return 3; 
+    if(width <= 1100 && width >600) return 5;
+    if (itemsPer !== undefined && itemsPer !== 0) {
+      return itemsPer;
+    }
+    return 7;
+  };
+
+  const [itemsPerPage, setItemsPerPage] = useState<number>(getItemsPerPage(window.innerWidth));
   useEffect(() => {
     const handleResize = () => {
       setItemsPerPage(getItemsPerPage(window.innerWidth));
