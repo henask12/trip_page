@@ -49,14 +49,19 @@ export const roundTripBusiness: FormValues = {
 export const multiCityEconomy: FormValues = {
   flightSections: [
     {
-      origin: "Tokyo",
-      destination: "Sydney",
+      origin: "NRT",
+      destination: "DXB",
       flightDates: [new Date("2024-10-01T00:00:00Z"), null],
     },
     {
-      origin: "Sydney",
-      destination: "New York",
+      origin: "DXB",
+      destination: "JFK",
       flightDates: [new Date("2024-10-15T00:00:00Z"), null],
+    },
+    {
+      origin: "JFK",
+      destination: "BKK",
+      flightDates: [new Date("2024-10-19T00:00:00Z"), null],
     },
   ],
   guestAdults: 2,
@@ -69,8 +74,8 @@ export const multiCityEconomy: FormValues = {
 export const oneWayBusinessSpecificDates: FormValues = {
   flightSections: [
     {
-      origin: "San Francisco",
-      destination: "Berlin",
+      origin: "JNB",
+      destination: "ADD",
       flightDates: [new Date("2024-11-01T00:00:00Z"), null],
     },
   ],
