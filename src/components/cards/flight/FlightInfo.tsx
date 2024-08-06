@@ -1,7 +1,7 @@
-// components/FlightInfo.tsx
-import { CalendarIcon, PencilIcon } from '@heroicons/react/24/outline';
-import { TicketIcon, UserIcon } from '@heroicons/react/24/solid';
-import React from 'react';
+import { CalendarIcon, PencilIcon } from "@heroicons/react/24/outline";
+import { TicketIcon, UserIcon } from "@heroicons/react/24/solid";
+import React from "react";
+import DateTabs, { DateRange } from "@/components/DateTabs";
 
 interface FlightInfoProps {
   departure: string;
@@ -9,6 +9,7 @@ interface FlightInfoProps {
   passengerCount: number;
   cabinClass: string;
   travelDates: string;
+  dateRanges: DateRange[];
 }
 
 const FlightInfo: React.FC<FlightInfoProps> = ({
@@ -17,10 +18,11 @@ const FlightInfo: React.FC<FlightInfoProps> = ({
   passengerCount,
   cabinClass,
   travelDates,
+  dateRanges
 }) => {
   return (
-    <div className="flex items-center space-x-4 p-4 bg-white shadow-md rounded-md">
-      <div>
+    <div className="container flex justify-between  p-4 bg-white ">
+      <div className="flex-1 ">
         <h2 className="text-xl font-semibold">{`${departure} ➔ ${destination}`}</h2>
         <div className="flex items-center space-x-4 mt-2 text-gray-500">
           <div className="flex items-center space-x-1">
@@ -34,13 +36,17 @@ const FlightInfo: React.FC<FlightInfoProps> = ({
           <div className="flex items-center space-x-1">
             <CalendarIcon className="h-5 w-5" />
             <span>{travelDates}</span>
-          </div>
+          </div>{" "}
+          <button className=" text-blue-600 flex ">
+            <PencilIcon className="h-5 w-5" />
+            <span>Edit</span>
+          </button>
         </div>
       </div>
-      <button className="ml-auto text-blue-600 flex items-center space-x-1">
-        <PencilIcon className="h-5 w-5" />
-        <span>Edit</span>
-      </button>
+      <div className="flex-shrink-0">
+        {" "}
+        <DateTabs dateRanges={dateRanges} itemsPer={3} />{" "}
+      </div>
     </div>
   );
 };
