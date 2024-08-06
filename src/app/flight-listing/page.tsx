@@ -14,9 +14,7 @@ import FlightInfo from "@/components/cards/flight/FlightInfo";
 import useScrollHandler from "@/utils/useScroll";
 import { setFlightSearchState } from "@/features/flightSearch/flightSearchSlice";
 import {
-  FlightSection,
   multiCityEconomy,
-  roundTripBusiness,
 } from "@/data/searchData";
 
 const dateRanges = [
@@ -35,6 +33,7 @@ const dateRanges = [
   { range: "Sep 11 – Sep 25", price: "$125" },
   { range: "Sep 12 – Sep 26", price: "View" },
 ];
+
 const DEMO_DATA: FlightCardProps["data"][] = [
   {
     id: "1",
