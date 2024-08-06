@@ -1,12 +1,6 @@
 import React, { FC, useState } from "react";
 import Image from "next/image";
 import { Popover } from "@headlessui/react";
-import {
-  BoltIcon,
-  FilmIcon,
-  GlobeAltIcon,
-  WifiIcon,
-} from "@heroicons/react/24/outline";
 import { FlightCardProps } from "@/components/type";
 import PopoverContent from "./PopoverContent";
 import AmenityIcon from "./AmenityIcon";
@@ -146,9 +140,9 @@ const FlightCardHeader: FC<{ data: FlightCardProps["data"] }> = ({ data }) => {
           </span>
         </div>
         <div className="text-sm text-neutral-500 font-normal mt-0.5 flex justify-between">
-          <span className="hover:text-blue-500 cursor-pointer">HKG T1</span>
+          <span className="hover:text-blue-500 cursor-pointer">{data.origin}</span>
           <span>Nonstop</span>
-          <span className="hover:text-blue-500 cursor-pointer">BKK T1</span>
+          <span className="hover:text-blue-500 cursor-pointer">{data.destination}</span>
         </div>
 
         {isPopoverDepartureVisible && (
@@ -194,7 +188,7 @@ const FlightCardHeader: FC<{ data: FlightCardProps["data"] }> = ({ data }) => {
                           Departure: {data.departureTime}
                         </span>
                         <span className="font-semibold">
-                          Tokyo International Airport (HND)
+                          {data.flightNumber} {" "}  {data.origin}
                         </span>
                       </div>
                       <div className="flex flex-col space-y-1">
@@ -202,7 +196,7 @@ const FlightCardHeader: FC<{ data: FlightCardProps["data"] }> = ({ data }) => {
                           Arrival: {data.arrivalTime}
                         </span>
                         <span className="font-semibold">
-                          Singapore International Airport (SIN)
+                        {data.flightNumber} {" "}  {data.destination}
                         </span>
                       </div>
                     </div>
