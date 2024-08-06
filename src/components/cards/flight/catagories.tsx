@@ -13,6 +13,7 @@ interface Category {
 } 
 interface CategoriesProps {
   onFilterChange: (filter: string | null) => void;
+  status?: string | null;
 }
 const categories: Category[] = [
   {
@@ -38,7 +39,7 @@ const categories: Category[] = [
   },
 ];
 
-const Categories: React.FC<CategoriesProps> = ({onFilterChange}) => {
+const Categories: React.FC<CategoriesProps> = ({onFilterChange, status}) => {
   const [activeTab, setActiveTab] = useState<string>(categories[0].name);
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [currentDateTime, setCurrentDateTime] = useState<string>("");
@@ -83,7 +84,7 @@ const Categories: React.FC<CategoriesProps> = ({onFilterChange}) => {
   return (
     <div className="hidden lg:block w-full max-w-4xl mx-auto bg-white rounded-lg shadow-md">
       <div className="bg-blue-800 p-4 text-white rounded-t-lg flex justify-between">
-        <div className="font-bold text-lg">1. Departing to Bangkok</div>
+        <div className="font-bold text-lg">{status}</div>
         <div className="text-sm flex items-center space-x-2">
           <span>*Last updated: {currentDateTime}</span>
         </div>
