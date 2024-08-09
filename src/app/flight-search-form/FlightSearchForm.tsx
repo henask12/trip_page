@@ -55,6 +55,7 @@ const tripType = [
 ];
 
 interface FlightSection {
+  id?: number;
   origin: string;
   destination: string;
   flightDates: [Date | null, Date | null];
@@ -103,11 +104,11 @@ const FlightSearchForm: FC<FlightSearchFormProps> = ({}) => {
   const [tripTypeState, setTripTypeState] = useState("One-Way");
   const dispatch = useDispatch();
 
-  
   const handleSubmit = async (
     values: FormValues,
     actions: FormikHelpers<FormValues>
   ) => {
+    debugger;
     try {
       dispatch(setFlightSearchState(values));
       debugger;
@@ -335,168 +336,150 @@ const FlightSearchForm: FC<FlightSearchFormProps> = ({}) => {
     );
   };
 
-  const renderMultiCityForm = () => {
-    return (
-      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-        {({ values, setFieldValue }) => (
-          <Form>
-            <FieldArray name="flightSections">
-              {({ push, remove }) => (
-                <>
-                  {values.flightSections.map((section, index) => (
-                    <div key={index} className=" flex flex-1 mt-1 ml-2">
-                      <Field name={`flightSections[${index}].origin`}>
-                        {({ field }: any) => (
-                          <LocationInput
-                            {...field}
-                            placeHolder="Flying to"
-                            desc="Where do you want to fly to?"
-                            className="w-1/4"
-                            divHideVerticalLineClass="-inset-x-0.5"
-                            setFieldValue={setFieldValue}
-                            fieldName={`flightSections[${index}].origin`}
-                          />
-                        )}
-                      </Field>
-                      <div className="self-center border-r border-slate-200 dark:border-slate-700 h-8"></div>
-                      <PaperAirplaneIcon className="h-5 w-5 mx-2 justify-center items-center mt-6 text-blue-500" />
-                      <Field name={`flightSections[${index}].destination`}>
-                        {({ field }: any) => (
-                          <LocationInput
-                            {...field}
-                            placeHolder="Flying to"
-                            desc="Where do you want to fly to?"
-                            className="w-1/4"
-                            divHideVerticalLineClass="-inset-x-0.5"
-                            setFieldValue={setFieldValue}
-                            fieldName={`flightSections[${index}].destination`}
-                          />
-                        )}
-                      </Field>
-
-                      <div className="self-center border-r border-slate-200 px-2 dark:border-slate-700 h-8"></div>
-                      <Field name={`flightSections[${index}].flightDates`}>
-                        {({ field }: any) => (
-                          <FlightDateRangeInput
-                            {...field}
-                            selectsRange={tripTypeState === "Round-Trip"}
-                            className="mb-4 w-1/4"
-                            onChange={(dates: [Date | null, Date | null]) => {
-                              setFieldValue(
-                                `flightSections[${index}].flightDates`,
-                                dates
-                              );
-                            }}
-                          />
-                        )}
-                      </Field>
-                      {index === values.flightSections.length - 1 &&
-                        index >= 2 && (
-                          <div className="absolute inset-x-0 items-start flex justify-center">
-                            <ClearDataButton
-                              newClass="mt-10"
-                              onClick={() => removeFlightSection(index, remove)}
-                            />
-                          </div>
-                        )}
-                    </div>
-                  ))}
-                  <div className="flex flex-1 mt-1">
-                    <ButtonSecondary
-                      type="button"
-                      className="w-4/5 h-5 hover:border-blue-400"
-                      onClick={() => addFlightSection(push)}
-                    >
-                      <PlusCircleIcon className="h-5 w-5 mr-2" />{" "}
-                      <span> Add another flight</span>
-                    </ButtonSecondary>
-                    <ButtonPrimary type="submit" className="w-1/5">
-                      Search
-                    </ButtonPrimary>
-                  </div>
-                </>
-              )}
-            </FieldArray>
-          </Form>
-        )}
-      </Formik>
-    );
-  };
-
-  const renderForm = () => {
-    return (
-      <div className="w-full relative mb-2 dark:bg-neutral-800 ">
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
-          {({ setFieldValue }) => (
-            <Form className="w-full relative mb-2 dark:bg-neutral-800">
-              {renderRadioBtn()}
-              {tripTypeState !== "Multi-City" ? (
-                <div className=" flex flex-1">
-                  {" "}
-                  <>
-                    {" "}
-                    <Field name={`flightSections[0].origin`}>
-                      {({ field }: any) => (
-                        <LocationInput
-                          {...field}
-                          placeHolder="Flying to"
-                          desc="Where do you want to fly to?"
-                          className="w-1/4"
-                          divHideVerticalLineClass="-inset-x-0.5"
-                          setFieldValue={setFieldValue}
-                          fieldName={`flightSections[0].origin`}
-                        />
-                      )}
-                    </Field>
-                    <div className="self-center border-r border-slate-200 dark:border-slate-700 h-8"></div>
-                    <PaperAirplaneIcon className="h-5 w-5 mx-2 justify-center items-center mt-6 text-blue-500" />
-                    <Field name={`flightSections[0].destination`}>
-                      {({ field }: any) => (
-                        <LocationInput
-                          {...field}
-                          placeHolder="Flying to"
-                          desc="Where do you want to fly to?"
-                          className="w-1/4"
-                          divHideVerticalLineClass="-inset-x-0.5"
-                          setFieldValue={setFieldValue}
-                          fieldName={`flightSections[0].destination`}
-                        />
-                      )}
-                    </Field>
-                    <div className="self-center border-r border-slate-200 px-2 dark:border-slate-700 h-8"></div>
-                    <Field name="flightSections[0].flightDates">
-                      {({ field }: any) => (
-                        <FlightDateRangeInput
-                          {...field}
-                          selectsRange={tripTypeState === "Round-Trip"}
-                          className="mb-4 w-1/4"
-                          onChange={(dates: [Date | null, Date | null]) => {
-                            setFieldValue(
-                              "flightSections[0].flightDates",
-                              dates
-                            );
-                          }}
-                        />
-                      )}
-                    </Field>
-                    <div className="self-center border-r border-slate-200 px-2 dark:border-slate-700 h-8"></div>
-                    <ButtonPrimary  type="submit">Search</ButtonPrimary>{" "}
-                  </>
+  const renderMultiCityForm = ({ setFieldValue, values }: { setFieldValue: (field: string, value: any) => void; values: any; }) => (
+    <FieldArray name="flightSections">
+      {({ push, remove }) => (
+        <>
+          {values.flightSections.map((section:FlightSection, index: number) => (
+            <div key={section.id || index} className="flex flex-1 mt-1 ml-2">
+              <Field name={`flightSections[${index}].origin`}>
+                {({ field }: any) => (
+                  <LocationInput
+                    {...field}
+                    placeHolder="Flying to"
+                    desc="Where do you want to fly to?"
+                    className="w-1/4"
+                    divHideVerticalLineClass="-inset-x-0.5"
+                    setFieldValue={setFieldValue}
+                    fieldName={`flightSections[${index}].origin`}
+                  />
+                )}
+              </Field>
+              <div className="self-center border-r border-slate-200 dark:border-slate-700 h-8"></div>
+              <PaperAirplaneIcon className="h-5 w-5 mx-2 justify-center items-center mt-6 text-blue-500" />
+              <Field name={`flightSections[${index}].destination`}>
+                {({ field }: any) => (
+                  <LocationInput
+                    {...field}
+                    placeHolder="Flying to"
+                    desc="Where do you want to fly to?"
+                    className="w-1/4"
+                    divHideVerticalLineClass="-inset-x-0.5"
+                    setFieldValue={setFieldValue}
+                    fieldName={`flightSections[${index}].destination`}
+                  />
+                )}
+              </Field>
+  
+              <div className="self-center border-r border-slate-200 px-2 dark:border-slate-700 h-8"></div>
+              <Field name={`flightSections[${index}].flightDates`}>
+                {({ field }: any) => (
+                  <FlightDateRangeInput
+                    {...field}
+                    selectsRange={tripTypeState === "Round-Trip"}
+                    className="mb-4 w-1/4"
+                    onChange={(dates: [Date | null, Date | null]) => {
+                      setFieldValue(`flightSections[${index}].flightDates`, dates);
+                    }}
+                  />
+                )}
+              </Field>
+              {index === values.flightSections.length - 1 && index >= 2 && (
+                <div className="absolute inset-x-0 items-start flex justify-center">
+                  <ClearDataButton
+                    newClass="mt-10"
+                    onClick={() => remove(index)}
+                  />
                 </div>
-              ) : (
-                <>{renderMultiCityForm()}</>
               )}
-            </Form>
-          )}
-        </Formik>
-      </div>
-    );
-  };
+            </div>
+          ))}
+          <div className="flex flex-1 mt-1">
+            <ButtonSecondary
+              type="button"
+              className="w-4/5 h-5 hover:border-blue-400"
+              onClick={() => push({ id: Date.now(), origin: '', destination: '', flightDates: [] })}
+            >
+              <PlusCircleIcon className="h-5 w-5 mr-2" />{" "}
+              <span> Add another flight</span>
+            </ButtonSecondary>
+            <ButtonPrimary type="submit" className="w-1/5">
+              Search
+            </ButtonPrimary>
+          </div>
+        </>
+      )}
+    </FieldArray>
+  );
+  
+  
 
+  const renderForm = () => (
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
+    >
+      {({ setFieldValue, values }) => (
+        <Form className="w-full relative mb-2 dark:bg-neutral-800">
+          {renderRadioBtn()}
+          {tripTypeState !== "Multi-City" ? (
+            <div className="flex flex-1">
+              <>
+                <Field name="flightSections[0].origin">
+                  {({ field }: any) => (
+                    <LocationInput
+                      {...field}
+                      placeHolder="Flying to"
+                      desc="Where do you want to fly to?"
+                      className="w-1/4"
+                      divHideVerticalLineClass="-inset-x-0.5"
+                      setFieldValue={setFieldValue}
+                      fieldName="flightSections[0].origin"
+                    />
+                  )}
+                </Field>
+                <div className="self-center border-r border-slate-200 dark:border-slate-700 h-8"></div>
+                <PaperAirplaneIcon className="h-5 w-5 mx-2 justify-center items-center mt-6 text-blue-500" />
+                <Field name="flightSections[0].destination">
+                  {({ field }: any) => (
+                    <LocationInput
+                      {...field}
+                      placeHolder="Flying to"
+                      desc="Where do you want to fly to?"
+                      className="w-1/4"
+                      divHideVerticalLineClass="-inset-x-0.5"
+                      setFieldValue={setFieldValue}
+                      fieldName="flightSections[0].destination"
+                    />
+                  )}
+                </Field>
+                <div className="self-center border-r border-slate-200 px-2 dark:border-slate-700 h-8"></div>
+                <Field name="flightSections[0].flightDates">
+                  {({ field }: any) => (
+                    <FlightDateRangeInput
+                      {...field}
+                      selectsRange={tripTypeState === "Round-Trip"}
+                      className="mb-4 w-1/4"
+                      onChange={(dates: [Date | null, Date | null]) => {
+                        setFieldValue("flightSections[0].flightDates", dates);
+                      }}
+                    />
+                  )}
+                </Field>
+                <div className="self-center border-r border-slate-200 px-2 dark:border-slate-700 h-8"></div>
+                <ButtonPrimary type="submit">Search</ButtonPrimary>
+              </>
+            </div>
+          ) : (
+            renderMultiCityForm({ setFieldValue, values }) // Pass setFieldValue and values here
+          )}
+        </Form>
+      )}
+    </Formik>
+  );
+  
+  
   return renderForm();
 };
 
